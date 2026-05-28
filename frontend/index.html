@@ -4,27 +4,69 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>pivotnews.ai — video pipeline</title>
-    <style>
-      :root { --brand: #E8593C; }
-      body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; }
-      header { background: var(--brand); padding: 14px 20px; font-weight: 700; }
-      main { padding: 20px; max-width: 720px; }
-      .muted { color: #888; }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header>pivotnews.ai · video pipeline</header>
+    <header>
+      <span class="brand">pivotnews.ai</span>
+      <span class="sub">video pipeline</span>
+      <span class="spacer"></span>
+      <label>API <input id="apiBase" size="28" /></label>
+      <button id="tabConfig" class="tab">Config</button>
+    </header>
+
     <main>
-      <h2>Dashboard</h2>
-      <p class="muted">
-        Phase 1 skeleton. The job-creation form, live stage status, beat
-        previews, config editor and final-video player are wired in the
-        frontend phases. Backend API is configured via
-        <code>window.API_BASE</code>.
-      </p>
+      <!-- Create -->
+      <section id="create" class="card">
+        <h2>New video</h2>
+        <div class="row">
+          <label>Desk
+            <select id="desk"></select>
+          </label>
+          <label class="muted" id="writerLabel">writer —</label>
+        </div>
+        <label>Topics
+          <textarea id="topics" rows="4" placeholder="Paste the desk's daily topics…"></textarea>
+        </label>
+        <div class="row">
+          <button id="createBtn" class="primary">Create &amp; run</button>
+          <span id="createMsg" class="muted"></span>
+        </div>
+      </section>
+
+      <!-- Job -->
+      <section id="job" class="card hidden">
+        <div class="row">
+          <h2>Job <code id="jobId"></code></h2>
+          <span class="spacer"></span>
+          <span id="jobState" class="pill"></span>
+          <button id="refreshBtn">Refresh</button>
+        </div>
+        <div id="stages" class="stages"></div>
+
+        <div id="finalWrap" class="hidden">
+          <h3>Final video</h3>
+          <video id="finalVideo" controls playsinline></video>
+          <div><a id="finalDownload" download>Download mp4</a></div>
+        </div>
+
+        <h3>Beats</h3>
+        <div id="beats" class="beats"></div>
+      </section>
+
+      <!-- Config editor -->
+      <section id="configCard" class="card hidden">
+        <div class="row">
+          <h2>Config (raw JSON)</h2>
+          <span class="spacer"></span>
+          <button id="reloadConfig">Reload</button>
+          <button id="saveConfig" class="primary">Save</button>
+          <span id="configMsg" class="muted"></span>
+        </div>
+        <textarea id="configJson" rows="28" spellcheck="false"></textarea>
+      </section>
     </main>
-    <script>
-      window.API_BASE = window.API_BASE || "http://localhost:8000";
-    </script>
+
+    <script src="./app.js"></script>
   </body>
 </html>

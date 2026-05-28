@@ -110,6 +110,38 @@ def run_job_endpoint(
     return job
 
 
+class BeatPromptUpdate(BaseModel):
+    image_prompt: str | None = None
+    motion_prompt: str | None = None
+    broll_keywords: list[str] | None = None
+
+
+@router.patch("/jobs/{job_id}/beats/{beat_id}", response_model=Job)
+def update_beat_prompts(
+    job_id: str,
+    beat_id: int,
+    body: BeatPromptUpdate,
+    jobs: JobStore = Depends(get_job_store),
+) -> Job:
+    """Edit a beat's image/motion prompts. Narration is left alone so the
+    measured timing stays valid; call regenerate afterwards to re-render."""
+    job = jobs.get(job_id)
+    if job is None:
+        raise HTTPException(404, "job not found")
+    if job.script is None:
+        raise HTTPException(400, "job has no script yet")
+    beat = next((b for b in job.script.beats if b.id == beat_id), None)
+    if beat is None:
+        raise HTTPException(404, "beat not found")
+    if body.image_prompt is not None:
+        beat.image_prompt = body.image_prompt
+    if body.motion_prompt is not None:
+        beat.motion_prompt = body.motion_prompt
+    if body.broll_keywords is not None:
+        beat.broll_keywords = body.broll_keywords
+    return jobs.save(job)
+
+
 @router.post("/jobs/{job_id}/beats/{beat_id}/regenerate", response_model=Job)
 def regenerate_beat(
     job_id: str,

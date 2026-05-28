@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pivotnews.ai — video pipeline</title>
+    <style>
+      :root { --brand: #E8593C; }
+      body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; }
+      header { background: var(--brand); padding: 14px 20px; font-weight: 700; }
+      main { padding: 20px; max-width: 720px; }
+      .muted { color: #888; }
+    </style>
+  </head>
+  <body>
+    <header>pivotnews.ai · video pipeline</header>
+    <main>
+      <h2>Dashboard</h2>
+      <p class="muted">
+        Phase 1 skeleton. The job-creation form, live stage status, beat
+        previews, config editor and final-video player are wired in the
+        frontend phases. Backend API is configured via
+        <code>window.API_BASE</code>.
+      </p>
+    </main>
+    <script>
+      window.API_BASE = window.API_BASE || "http://localhost:8000";
+    </script>
+  </body>
+</html>

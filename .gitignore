@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.artifacts/
+*.mp4
+*.mp3
+*.png
+!backend/assets/*.png
+.DS_Store
+node_modules/

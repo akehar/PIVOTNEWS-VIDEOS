@@ -1,13 +1,11 @@
 services:
   - type: web
     name: pivotnews-videos-api
-    runtime: python
+    runtime: docker
     rootDir: backend
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-    # FFmpeg is required by the assembly stage (Phase 5+).
-    # On Render, install it via a build step or a Docker runtime; the python
-    # runtime image does not ship ffmpeg by default.
+    dockerfilePath: ./Dockerfile
+    # Docker runtime bakes in ffmpeg (see backend/Dockerfile), which the
+    # assembly stage requires.
     envVars:
       - key: GEMINI_API_KEY
         sync: false

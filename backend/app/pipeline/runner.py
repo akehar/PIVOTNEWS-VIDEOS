@@ -11,9 +11,10 @@ run stops cleanly at the first unimplemented step.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
+from app.clients import Clients
 from app.models.job import Job, JobState, StageName, StageState, _now
 from app.models.pipeline_config import PipelineConfig
 from app.storage.base import Storage
@@ -25,6 +26,7 @@ class StageContext:
     config: PipelineConfig
     storage: Storage
     job_store: JobStore
+    clients: Clients = field(default_factory=Clients)
 
 
 StageFn = Callable[[Job, StageContext], None]

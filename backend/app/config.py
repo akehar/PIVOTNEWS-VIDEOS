@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,13 +18,18 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        populate_by_name=True,
     )
 
     # --- Provider API keys (already present in Render env) ---
     gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
     elevenlabs_api_key: str = Field(default="", alias="ELEVENLABS_API_KEY")
     fal_key: str = Field(default="", alias="FAL_KEY")
-    suno_api_key: str = Field(default="", alias="SUNO_API_KEY")
+    # Accept the legacy short name from the shared env group.
+    suno_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("SUNO_API_KEY", "SUNOAPI"),
+    )
     suno_api_base: str = Field(
         default="https://api.sunoapi.org", alias="SUNO_API_BASE"
     )
@@ -36,11 +41,17 @@ class Settings(BaseSettings):
     r2_account_id: str = Field(default="", alias="R2_ACCOUNT_ID")
     r2_access_key_id: str = Field(default="", alias="R2_ACCESS_KEY_ID")
     r2_secret_access_key: str = Field(default="", alias="R2_SECRET_ACCESS_KEY")
-    r2_bucket: str = Field(default="", alias="R2_BUCKET")
+    r2_bucket: str = Field(
+        default="",
+        validation_alias=AliasChoices("R2_BUCKET", "R2_BUCKET_NAME"),
+    )
     # Optional explicit endpoint; if blank we derive it from the account id.
     r2_endpoint: str = Field(default="", alias="R2_ENDPOINT")
     # Public base URL for serving artifacts (R2 public bucket / custom domain).
-    r2_public_base_url: str = Field(default="", alias="R2_PUBLIC_BASE_URL")
+    r2_public_base_url: str = Field(
+        default="",
+        validation_alias=AliasChoices("R2_PUBLIC_BASE_URL", "R2_PUBLIC_URL"),
+    )
 
     # --- Local fallback (used only when R2 is not configured, e.g. dev) ---
     local_storage_dir: str = Field(default="./.artifacts", alias="LOCAL_STORAGE_DIR")

@@ -20,7 +20,12 @@ class Clients:
     def gemini(self):
         from app.clients.gemini import GeminiClient
 
-        return GeminiClient(self.settings.gemini_api_key)
+        return GeminiClient(
+            api_key=self.settings.gemini_api_key,
+            service_account_json=self.settings.google_application_credentials_json,
+            gcp_project=self.settings.gcp_project,
+            gcp_location=self.settings.gcp_location,
+        )
 
     @cached_property
     def elevenlabs(self):

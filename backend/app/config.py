@@ -23,9 +23,12 @@ class Settings(BaseSettings):
 
     # --- Provider API keys (already present in Render env) ---
     gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
-    elevenlabs_api_key: str = Field(default="", alias="ELEVENLABS_API_KEY")
-    fal_key: str = Field(default="", alias="FAL_KEY")
     # Accept the legacy short name from the shared env group.
+    elevenlabs_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("ELEVENLABS_API_KEY", "ELEVENLABS"),
+    )
+    fal_key: str = Field(default="", alias="FAL_KEY")
     suno_api_key: str = Field(
         default="",
         validation_alias=AliasChoices("SUNO_API_KEY", "SUNOAPI"),
@@ -36,6 +39,15 @@ class Settings(BaseSettings):
     elevenlabs_api_base: str = Field(
         default="https://api.elevenlabs.io", alias="ELEVENLABS_API_BASE"
     )
+
+    # --- Gemini via Vertex AI (fallback when no GEMINI_API_KEY) ---
+    # The shared env group carries a service-account JSON; use it to call
+    # Gemini through Vertex when the AI-Studio key is not provided.
+    google_application_credentials_json: str = Field(
+        default="", alias="GOOGLE_APPLICATION_CREDENTIALS_JSON"
+    )
+    gcp_project: str = Field(default="", alias="GCP_PROJECT")
+    gcp_location: str = Field(default="us-central1", alias="GCP_LOCATION")
 
     # --- Cloudflare R2 (S3-compatible) ---
     r2_account_id: str = Field(default="", alias="R2_ACCOUNT_ID")

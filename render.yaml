@@ -6,25 +6,9 @@ services:
     dockerfilePath: ./Dockerfile
     # Docker runtime bakes in ffmpeg (see backend/Dockerfile), which the
     # assembly stage requires.
+    # Secrets (R2 + provider API keys) come from the workspace env group.
     envVars:
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: ELEVENLABS_API_KEY
-        sync: false
-      - key: FAL_KEY
-        sync: false
-      - key: SUNO_API_KEY
-        sync: false
-      - key: R2_ACCOUNT_ID
-        sync: false
-      - key: R2_ACCESS_KEY_ID
-        sync: false
-      - key: R2_SECRET_ACCESS_KEY
-        sync: false
-      - key: R2_BUCKET
-        sync: false
-      - key: R2_PUBLIC_BASE_URL
-        sync: false
+      - fromGroup: Chef Peppy
 
   - type: web
     name: pivotnews-videos-dashboard

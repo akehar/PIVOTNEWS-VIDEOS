@@ -19,12 +19,20 @@ class R2Storage:
     ) -> None:
         self.bucket = bucket
         self.public_base_url = public_base_url.rstrip("/")
+        # Note on the checksum flags: boto3 >=1.36 defaults to sending streaming
+        # request checksums and validating response checksums, neither of which
+        # R2 currently supports — every request returns 400 Bad Request without
+        # these set to "when_required".
         self.client = boto3.client(
             "s3",
             endpoint_url=endpoint_url,
             aws_access_key_id=access_key_id,
             aws_secret_access_key=secret_access_key,
-            config=Config(signature_version="s3v4"),
+            config=Config(
+                signature_version="s3v4",
+                request_checksum_calculation="when_required",
+                response_checksum_validation="when_required",
+            ),
             region_name="auto",
         )
 

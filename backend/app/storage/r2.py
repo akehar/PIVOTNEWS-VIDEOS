@@ -19,10 +19,12 @@ class R2Storage:
     ) -> None:
         self.bucket = bucket
         self.public_base_url = public_base_url.rstrip("/")
-        # Note on the checksum flags: boto3 >=1.36 defaults to sending streaming
-        # request checksums and validating response checksums, neither of which
-        # R2 currently supports — every request returns 400 Bad Request without
-        # these set to "when_required".
+        # Note on the checksum + addressing flags:
+        # - boto3 >=1.36 defaults to streaming request checksums and response
+        #   checksum validation, both rejected by R2 (400 Bad Request).
+        # - boto3's default virtual-host addressing
+        #   (https://<bucket>.<account>.r2.cloudflarestorage.com/...) is also
+        #   inconsistently accepted; force path-style for stable R2 ops.
         self.client = boto3.client(
             "s3",
             endpoint_url=endpoint_url,
@@ -32,6 +34,7 @@ class R2Storage:
                 signature_version="s3v4",
                 request_checksum_calculation="when_required",
                 response_checksum_validation="when_required",
+                s3={"addressing_style": "path"},
             ),
             region_name="auto",
         )

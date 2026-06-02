@@ -1,32 +1,14 @@
 services:
   - type: web
     name: pivotnews-videos-api
-    runtime: python
+    runtime: docker
     rootDir: backend
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-    # FFmpeg is required by the assembly stage (Phase 5+).
-    # On Render, install it via a build step or a Docker runtime; the python
-    # runtime image does not ship ffmpeg by default.
+    dockerfilePath: ./Dockerfile
+    # Docker runtime bakes in ffmpeg (see backend/Dockerfile), which the
+    # assembly stage requires.
+    # Secrets (R2 + provider API keys) come from the workspace env group.
     envVars:
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: ELEVENLABS_API_KEY
-        sync: false
-      - key: FAL_KEY
-        sync: false
-      - key: SUNO_API_KEY
-        sync: false
-      - key: R2_ACCOUNT_ID
-        sync: false
-      - key: R2_ACCESS_KEY_ID
-        sync: false
-      - key: R2_SECRET_ACCESS_KEY
-        sync: false
-      - key: R2_BUCKET
-        sync: false
-      - key: R2_PUBLIC_BASE_URL
-        sync: false
+      - fromGroup: Chef Peppy
 
   - type: web
     name: pivotnews-videos-dashboard
